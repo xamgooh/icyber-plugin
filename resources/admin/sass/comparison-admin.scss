@@ -1,0 +1,75 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.com-tab-group {
+  margin: 0;
+  list-style: none;
+  display: block;
+  padding: 10px 10px 0;
+  position: relative;
+  border-bottom: #ccd0d4 solid 1px;
+  z-index: 2;
+  margin-bottom: -1px;
+  border-top: none;
+}
+
+.com-tab-group:before {
+  content: "";
+  display: block;
+  line-height: 0;
+}
+
+.com-tab-group:after {
+  content: "";
+  display: block;
+  line-height: 0;
+  clear: both;
+}
+
+.order {
+  cursor: grab;
+
+  &.text-center {
+    text-align: center;
+  }
+}
+
+.com-tab-group > li {
+  float: left;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.com-tab-group li {
+  margin: 0 0.5em 0 0;
+}
+
+.com-tab-group li a {
+  background: #f1f1f1;
+  border-color: #ccd0d4;
+  padding: 5px 10px;
+  display: block;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  border: #ccc solid 1px;
+  border-bottom: 0 none;
+  text-decoration: none;
+  transition: none;
+}
+
+.com-tab-group li.active a {
+  background: #ffffff;
+}
+
+.metadata-wrap .error {
+  color: #d63638;
+}
+
+.com-tab-button.error {
+  border: 1px solid #d63638;
+}
