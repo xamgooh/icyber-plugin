@@ -16,7 +16,7 @@
  * Plugin Name:       Icyber Plugin
  * Plugin URI:        -
  * Description:       -
- * Version:           1.1.7
+ * Version:           1.1.8
  * Author:            -
  * Author URI:        -
  * License:           GPL-2.0+
