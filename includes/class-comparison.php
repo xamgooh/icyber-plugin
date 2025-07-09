@@ -107,7 +107,7 @@ class Comparison
 
    private function define_admin_hooks()
    {
-   	$this->plugin_admin = new Сomparison_Admin($this->get_comparison(), $this->get_version());
+   	$this->plugin_admin = new Comparison_Admin($this->get_comparison(), $this->get_version());
 
    	$this->loader->add_action('admin_enqueue_scripts', $this->plugin_admin, 'enqueue_styles');
    	$this->loader->add_action('admin_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts');
