@@ -98,11 +98,15 @@ class Comparison
    {
    	$this->plugin_init = new Comparison_Init($this->get_comparison(), $this->get_version());
 
+   	// The post type registration is now handled in Comparison_Init constructor
+   	// So we don't need these anymore:
+   	// $this->loader->add_action('init', $this->plugin_init, 'comparison_custom_posttype');
+   	// $this->loader->add_action('init', $this->plugin_init, 'comparison_list_custom_posttype');
+   	// $this->loader->add_action('init', $this->plugin_init, 'comparison_taxonomy');
+   	// $this->loader->add_action('init', $this->plugin_init, 'comparison_category_form_fields');
+   	
+   	// Only add the REST API endpoint through the loader
    	$this->loader->add_action('init', $this->plugin_init, 'rest_api_end_point');
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_custom_posttype');
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_list_custom_posttype');
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_taxonomy');
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_category_form_fields');
    }
 
    private function define_admin_hooks()
