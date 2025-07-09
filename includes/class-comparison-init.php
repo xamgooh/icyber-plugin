@@ -35,7 +35,18 @@ class Comparison_Init
 
         if ( is_admin() ) {
             $this->add_shortcode_columns();
-          }
+        }
+        
+        // CRITICAL: Register post types VERY early in the init process
+        add_action('init', array($this, 'comparison_custom_posttype'), 2);
+        add_action('init', array($this, 'comparison_list_custom_posttype'), 2);
+        add_action('init', array($this, 'comparison_taxonomy'), 5);
+        
+        // Register REST API endpoints
+        $this->rest_api_end_point();
+        
+        // Register category form fields
+        $this->comparison_category_form_fields();
     }
 
       public function add_shortcode_columns() {
