@@ -13,16 +13,13 @@ class Comparison_Custom_Posttype
         /**
          * Post Type: Comporisions.
          */
-        $show_in_menu = false;
         $labels = [
             "name" => __("Brands", "comporisons"),
             "singular_name" => __("Brands", "comporisons"),
             'menu_name' => __("ICBR-Compareit", "comporisons"),
             'all_items' => 'Brands',
         ];
-        if (is_admin() && current_user_can('manage_options')) {
-            $show_in_menu = true;
-        }
+
         $args = [
             "label" => __("Comporisons", "comporisons"),
             "labels" => $labels,
@@ -34,7 +31,7 @@ class Comparison_Custom_Posttype
             "rest_base" => "",
             "rest_controller_class" => "WP_REST_Posts_Controller",
             "has_archive" => false,
-            "show_in_menu" => $show_in_menu,
+            "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "delete_with_user" => false,
             "exclude_from_search" => true,
@@ -46,7 +43,7 @@ class Comparison_Custom_Posttype
             "menu_icon" => "dashicons-format-image",
             "supports" => ["title", "thumbnail"],
             "show_in_graphql" => false,
-            "register_meta_box_cb" =>  array($comparison_metabox, 'co_add_event_metaboxes'),
+            "register_meta_box_cb" => array($comparison_metabox, 'co_add_event_metaboxes'),
         ];
 
         register_post_type("com_comporison", $args);
@@ -62,9 +59,10 @@ class Comparison_Custom_Posttype
         global $post;
 
         /* Checks for single template by post type */
-        if ($post->post_type == 'com_comporison') {
-            if (file_exists(plugin_dir_path(dirname(__FILE__)) . 'template/redirect.php')) {
-                return plugin_dir_path(dirname(__FILE__)) . 'template/redirect.php';
+        if (!empty($post) && $post->post_type == 'com_comporison') {
+            $plugin_template = plugin_dir_path(dirname(__FILE__)) . 'template/redirect.php';
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
             }
         }
         return $single;
