@@ -98,10 +98,11 @@ class Comparison
    {
    	$this->plugin_init = new Comparison_Init($this->get_comparison(), $this->get_version());
 
-   	// Register hooks through the loader for proper timing
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_custom_posttype', 5);
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_list_custom_posttype', 5);
-   	$this->loader->add_action('init', $this->plugin_init, 'comparison_taxonomy', 10);
+   	// CRITICAL: Register post types with priority 0 (very early)
+   	// This ensures they exist before WordPress parses the request URL
+   	$this->loader->add_action('init', $this->plugin_init, 'comparison_custom_posttype', 0);
+   	$this->loader->add_action('init', $this->plugin_init, 'comparison_list_custom_posttype', 0);
+   	$this->loader->add_action('init', $this->plugin_init, 'comparison_taxonomy', 1);
    	$this->loader->add_action('init', $this->plugin_init, 'rest_api_end_point', 20);
    }
 
