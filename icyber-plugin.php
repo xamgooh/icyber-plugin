@@ -59,21 +59,11 @@ require plugin_dir_path(__FILE__) . 'includes/class-comparison-submenu.php';
  */
 function activate_comparison()
 {
-    // Temporarily register post types for activation
-    $temp_cpt = new Comparison_Custom_Posttype();
-    $temp_cpt->comparison_setup_post_type(Comparison_Metabox::class);
-    
-    $temp_list_cpt = new Comparison_List_Custom_Posttype();
-    $temp_list_cpt->comparison_list_setup_post_type(Comparison_List_Metabox::class);
-    
-    // Flush rewrite rules
-    flush_rewrite_rules();
-    
-    // Set a flag to indicate we need to flush rules on next init
-    update_option('icyber_plugin_just_activated', true);
-    
     // Setup options
     Comparison::setup_options();
+    
+    // Set a flag to flush rewrite rules on next page load
+    update_option('icyber_plugin_needs_flush', true);
 }
 
 /**
@@ -87,7 +77,7 @@ function deactivate_comparison()
 }
 
 /**
- * The code that runs during plugin deactivation.
+ * The code that runs during plugin uninstall.
  */
 function uninstall_comparison()
 {
@@ -110,11 +100,11 @@ register_uninstall_hook(__FILE__, 'uninstall_comparison');
 $plugin = new Comparison();
 
 /**
- * Handle flushing rewrite rules after activation
+ * Flush rewrite rules if needed after activation
  */
 add_action('init', function() {
-    if (get_option('icyber_plugin_just_activated')) {
+    if (get_option('icyber_plugin_needs_flush')) {
         flush_rewrite_rules();
-        delete_option('icyber_plugin_just_activated');
+        delete_option('icyber_plugin_needs_flush');
     }
 }, 999);
