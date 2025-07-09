@@ -62,8 +62,43 @@ function activate_comparison()
     // Setup options
     Comparison::setup_options();
     
-    // Set a flag to flush rewrite rules on next page load
-    update_option('icyber_plugin_needs_flush', true);
+    // Register post types before flushing rewrite rules
+    $comparison_metabox = new Comparison_Metabox();
+    $comparison_custom_posttype = new Comparison_Custom_Posttype();
+    $comparison_custom_posttype->comparison_setup_post_type('Comparison_Metabox');
+    
+    $comparison_list_metabox = new Comparison_List_Metabox();
+    $comparison_list_custom_posttype = new Comparison_List_Custom_Posttype();
+    $comparison_list_custom_posttype->comparison_list_setup_post_type('Comparison_List_Metabox');
+    
+    // Register taxonomy
+    $labels = [
+        'name' => __('Categories', 'comporisons'),
+        'singular_name' => __('Category', 'comporisons'),
+    ];
+
+    $args = [
+        'label' => __('Categories', 'comporisons'),
+        'labels' => $labels,
+        'public' => false,
+        'publicly_queryable' => false,
+        'hierarchical' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_nav_menus' => true,
+        'query_var' => true,
+        'rewrite' => ['slug' => 'com_category', 'with_front' => true],
+        'show_admin_column' => false,
+        'show_in_rest' => false,
+        'rest_base' => 'com_category',
+        'rest_controller_class' => 'WP_REST_Terms_Controller',
+        'show_in_quick_edit' => false,
+        'show_in_graphql' => false,
+    ];
+    register_taxonomy('com_category', ['com_comporison'], $args);
+    
+    // Now flush rewrite rules
+    flush_rewrite_rules();
 }
 
 /**
@@ -100,11 +135,7 @@ register_uninstall_hook(__FILE__, 'uninstall_comparison');
 $plugin = new Comparison();
 
 /**
- * Flush rewrite rules if needed after activation
+ * Flush rewrite rules if needed - NOT NEEDED ANYMORE
+ * This was handled in the activation hook
  */
-add_action('init', function() {
-    if (get_option('icyber_plugin_needs_flush')) {
-        flush_rewrite_rules();
-        delete_option('icyber_plugin_needs_flush');
-    }
-}, 999);
+// The flush on init was removed as it's handled properly in activation
