@@ -1,100 +1,248 @@
-/* vietnamese */
-@font-face {
-  font-family: "Vietnam";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(../fonts/FBVzdDflz-iPfoPuIC2iIqkn6H9k.woff2) format("woff2");
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+/* Comparison Plugin - Redirect Popup Styles */
+
+/* Overlay */
+.com-redirect-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9999;
 }
-/* vietnamese */
-@font-face {
-  font-family: "Vietnam-medium";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(../fonts/BeVietnam-Medium.ttf) format("ttf");
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+
+.com-redirect-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
-/* vietnamese */
-@font-face {
-  font-family: "Vietnam-bold";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/BeVietnam-Bold.ttf) format("ttf");
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+
+/* Redirect Box */
+.com-redirect-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 380px;
+    max-width: 90vw;
+    padding: 40px 32px;
+    background: #ffffff;
+    border: 2px solid rgba(45, 55, 72, 0.1);
+    border-radius: 16px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+    z-index: 10000;
 }
-/* cyrillic */
-@font-face {
-  font-family: "Ubuntu";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/4iCv6KVjbNBYlgoCxCvjtGyNL4U.woff2) format("woff2");
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+
+.com-redirect-box.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
 }
-/* greek-ext */
-@font-face {
-  font-family: "Ubuntu";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/4iCv6KVjbNBYlgoCxCvjvGyNL4U.woff2) format("woff2");
-  unicode-range: U+1F00-1FFF;
+
+/* Brand Logo */
+.com-redirect-brand-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-/* greek */
-@font-face {
-  font-family: "Ubuntu";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/4iCv6KVjbNBYlgoCxCvjs2yNL4U.woff2) format("woff2");
-  unicode-range: U+0370-03FF;
+
+.com-redirect-brand-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
-/* latin-ext */
-@font-face {
-  font-family: "Ubuntu";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/4iCv6KVjbNBYlgoCxCvjvmyNL4U.woff2) format("woff2");
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+
+.com-redirect-box h3 {
+    font-size: 22px;
+    margin-bottom: 16px;
+    color: #000;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
-/* latin */
-@font-face {
-  font-family: "Ubuntu";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(../fonts/4iCv6KVjbNBYlgoCxCvjsGyN.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+
+.com-redirect-box p {
+    color: #000;
+    font-size: 14px;
+    margin-bottom: 16px;
+    opacity: 0.8;
+    line-height: 1.5;
 }
-.com_redirection_popup {
-  --white: #ffffff;
-  --black: #222222;
-  --blue-200: #eef1fb;
-  --blue-800: #1e72bd;
-  --red-500: #f0544f;
-  --midnight-blue-500: #191c5c;
-  --main-font: "Vietnam", sans-serif;
-  --bold-font: "Vietnam-bold", sans-serif;
-  --bebas-font: "Ubuntu", cursive;
-  --font-n: 16px;
-  --font-s: 14px;
-  --font-l: 18px;
-  --font-xl: 36px;
-  --font-n-h1: 32px;
-  --font-n-h2: 24px;
-  --font-n-h3: 22px;
-  --font-n-h4: 18px;
-  --font-n-h5: 16px;
-  --font-h1: 36px;
-  --font-h2: 30px;
-  --font-h3: 24px;
-  --font-h4: 20px;
-  --font-h5: 18px;
-  --item-bg-color: var(--white);
-  --bg-color: var(--blue-200);
-  --text-color: var(--black);
+
+/* Loading bar */
+.com-redirect-loading-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.com-redirect-loading-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ff88, #00ffcc);
+    width: 0%;
+    transition: width 3s linear;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.com-redirect-box.active .com-redirect-loading-fill {
+    width: 100%;
+}
+
+/* Loading text */
+.com-redirect-loading-text {
+    font-size: 8px !important;
+    color: #000;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 2px;
+    margin-bottom: 16px;
+    position: relative;
+    display: inline-block;
+}
+
+/* Animated dots for loading text */
+.com-redirect-loading-text::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 5px;
+}
+
+.com-redirect-box.active .com-redirect-loading-text::after {
+    animation: comRedirectLoadingDots 1.5s infinite;
+}
+
+@keyframes comRedirectLoadingDots {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+    100% { content: ''; }
+}
+
+/* Fallback text */
+.com-redirect-fallback-text {
+    font-size: 11px;
+    color: #000;
+    opacity: 0.7;
+    margin-top: 16px;
+}
+
+.com-redirect-fallback-text a {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #00ff88;
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 10px;
+    border-radius: 4px;
+    margin-left: 4px;
+    transition: all 0.2s ease;
+    vertical-align: middle;
+}
+
+.com-redirect-fallback-text a:hover {
+    background: #00dd77;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
+}
+
+/* Terms text */
+.com-redirect-terms-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px !important;
+    color: #000;
+    opacity: 0.4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #ffffff;
+    padding: 0 8px;
+    white-space: nowrap;
+}
+
+/* Close button */
+.com-redirect-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.com-redirect-close-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+.com-redirect-close-btn::before,
+.com-redirect-close-btn::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 2px;
+    background: #000;
+}
+
+.com-redirect-close-btn::before { transform: rotate(45deg); }
+.com-redirect-close-btn::after { transform: rotate(-45deg); }
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .com-redirect-box {
+        width: 90%;
+        max-width: 340px;
+        padding: 30px 24px;
+    }
+    
+    .com-redirect-brand-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .com-redirect-box h3 {
+        font-size: 20px;
+    }
+    
+    .com-redirect-box p {
+        font-size: 13px;
+    }
+    
+    .com-redirect-close-btn {
+        width: 28px;
+        height: 28px;
+        top: 15px;
+        right: 15px;
+    }
+    
+    .com-redirect-close-btn::before,
+    .com-redirect-close-btn::after {
+        width: 14px;
+    }
 }
