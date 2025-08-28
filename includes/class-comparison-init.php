@@ -84,20 +84,14 @@ class Comparison_Init
     public function rest_api_end_point()
     {
         add_action('rest_api_init', function () {
-            register_rest_route('comparison/v1', '/getcards', array(
-                'methods' => 'post',
-                'callback' => array($this, 'postCards'),
-                'permission_callback' => function ($request) {
-                    // This always returns false
-                    return __return_true();
-                },
-            ));
-
+            // REMOVED: getcards endpoint - no longer needed for card view
+            // Only register the list cards endpoint for table/list view
+            
             register_rest_route('comparison/v1', '/get_list_cards', array(
                 'methods' => 'post',
                 'callback' => array($this, 'postListCards'),
                 'permission_callback' => function ($request) {
-                    // This always returns false
+                    // This always returns true
                     return __return_true();
                 },
             ));
@@ -207,58 +201,8 @@ class Comparison_Init
         }
     }
 
-    public function postCards($request)
-    {
-        define( 'JSON_REQUEST', true );
-        $req = $request->get_params();
-
-        $schema = array(
-            'type' => 'object',
-            'properties' => array(
-                'category' => array(
-                    'type' => array( 'null', 'string' ),
-                ),
-                'offset' => array(
-                    'type' => array( 'null', 'number' ),
-                ),
-            ),
-        );
-        
-        if (is_wp_error(rest_validate_value_from_schema(json_decode($req['p']), $schema))) {
-            return new WP_Error('no_author', 'Invalid author', array('status' => 404));
-        }
-
-        $data = rest_sanitize_value_from_schema(json_decode($req['p']), $schema);
-
-        $args = array(
-            'post_type' => 'com_comporison',
-            'post_status' => 'publish',
-            'posts_per_page' => -1,
-            'orderby' => 'date',
-            'order' => 'DESC',
-        );
-
-        if (!empty($data['category']) && $data['category'] != 'null') {
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'com_category',
-                    'field' => 'slug',
-                    'terms' => $data['category'],
-                    'operator' => 'IN'
-                )
-            );
-        }
-
-        $query = new WP_Query($args);
-        
-        if (empty($query)) {
-            return new WP_Error('no_author', 'Invalid author', array('status' => 404));
-        }
-
-        $comparion_list_html = new ComparisonHtml();
-
-        return wp_send_json(['code' => 'success', 'data' => $comparion_list_html->get_list_html($query, $query->found_posts, $data['offset']), 'status' => 200]);
-    }
+    // REMOVED: postCards method - no longer needed for card view
+    // This method was used for the [Comparison] shortcode which is being removed
 
     public function postListCards($request)
     {
