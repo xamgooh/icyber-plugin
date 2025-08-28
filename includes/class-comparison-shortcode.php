@@ -79,7 +79,7 @@ class ComparisonShortcode
 		return new WP_Query($args);
 	}
 
-	//  V2 Shortcode
+	//  V2 Shortcode - UPDATED with correct spelling
 	public function custom_shortcode_v2($atts)
 	{
 		$html = '';
@@ -143,7 +143,8 @@ class ComparisonShortcode
 				$wp_query = $this->get_comarison_posts([0 => $value], $attributes['max'], $list_id);
 
 				$hidden = !($key === array_key_first($category)) ? " hidden" : "";
-				$html .= '<div class="com_comarison__list--container ' . $random_id . '_' . $value . $hidden . '">';
+				// UPDATED: Use correct spelling
+				$html .= '<div class="com_comparison__list--container ' . $random_id . '_' . $value . $hidden . '">';
 				$html .= $this->comparion_list_html->get_list_html_v2($wp_query, $list_id);
 				if ($wp_query->found_posts > $attributes['max'] && $attributes['load_more']) {
 					$html .= '<button data-restUrl="' . site_url() . '" data-list="' . $value . '" data-limit="' . $attributes['max'] . '" data-id="'. $list_id .'" class="com_btn-list--loadmore">' . get_option('comporisons_filter_label') . '</button>';
@@ -153,7 +154,8 @@ class ComparisonShortcode
 			}
 		} else {
 			$wp_query = $this->get_comarison_posts($category, $attributes['max'], $list_id);
-			$html .= '<div class="com_comarison__list--container ' . $random_id . '_' . $random_id . '">';
+			// UPDATED: Use correct spelling
+			$html .= '<div class="com_comparison__list--container ' . $random_id . '_' . $random_id . '">';
 			$html .= $this->comparion_list_html->get_list_html_v2($wp_query, $list_id, $attributes['max']);
 			if ($wp_query->found_posts > $attributes['max'] && $attributes['load_more']) {
 				// Determine the category value for data-list
