@@ -156,11 +156,15 @@ class ComparisonShortcode
 			$html .= '<div class="com_comarison__list--container ' . $random_id . '_' . $random_id . '">';
 			$html .= $this->comparion_list_html->get_list_html_v2($wp_query, $list_id, $attributes['max']);
 			if ($wp_query->found_posts > $attributes['max'] && $attributes['load_more']) {
-				if (is_array($category)) {
-					$html .= '<button data-restUrl="' . site_url() . '" data-list="' . str_replace(' ', '-', mb_strtolower(trim($category[0]))) . '" data-id="'. $list_id .'" data-limit="' . $attributes['max'] . '" class="com_btn-list--loadmore">' . get_option('comporisons_filter_label') . '</button>';
-				} else {
-					$html .= '<button data-restUrl="' . site_url() . '" class="com_btn-list--loadmore" data-limit="' . $attributes['max'] . '" data-id="'. $list_id .'">' . get_option('comporisons_filter_label') . '</button>';
+				// Determine the category value for data-list
+				$category_value = 'null'; // Default value when no category
+				if (is_array($category) && !empty($category[0])) {
+					$category_value = str_replace(' ', '-', mb_strtolower(trim($category[0])));
+				} else if (!empty($category)) {
+					$category_value = str_replace(' ', '-', mb_strtolower(trim($category)));
 				}
+				
+				$html .= '<button data-restUrl="' . site_url() . '" data-list="' . $category_value . '" data-limit="' . $attributes['max'] . '" data-id="'. $list_id .'" class="com_btn-list--loadmore">' . get_option('comporisons_filter_label') . '</button>';
 			}
 			$html .= '</div>';
 		}
