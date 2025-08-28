@@ -1,113 +1,186 @@
 <?php
-/**
- * Comparison Plugin - Submenu with Redirect Settings
- */
 
-class Comparison_Submenu {
-    
+/**
+ * Sub menu class
+ *
+ * @author Mostafa <mostafa.soufi@hotmail.com>
+ */
+class Comparison_Sub_Menu
+{
     /**
-     * Initialize the submenu
+     * Autoload method
+     * @return void
      */
-    public function __construct() {
-        add_action('admin_menu', array($this, 'add_submenu_page'));
+    public function __construct()
+    {
+        add_action('admin_menu', array(&$this, 'register_sub_menu'));
         add_action('admin_init', array($this, 'register_settings'));
-        
-        // AJAX handlers for saving settings
         add_action('wp_ajax_comparison_save_redirect_settings', array($this, 'ajax_save_redirect_settings'));
     }
-    
+
     /**
-     * Add submenu pages
+     * Register all settings
      */
-    public function add_submenu_page() {
-        // Main settings page
+    public function register_settings()
+    {
+        add_settings_section(
+            'comporisons_settings_section_id', // section ID
+            '', // title (if needed)
+            '', // callback function (if needed)
+            'comporisons-slug' // page slug
+        );
+
+        /** Sort button label */
+        register_setting(
+            'comporisons_settings', // settings group name
+            'comporisons_sorting_label', // option name
+            'sanitize_text_field' // sanitization function
+        );
+
+        /** Filter button label */
+        register_setting(
+            'comporisons_settings', // settings group name
+            'comporisons_filter_label', // option name
+            'sanitize_text_field' // sanitization function
+        );
+
+        /** NEW Popup Redirect Settings */
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_title');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_safe_text');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_loading_text');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_fallback_text');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_button_text');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_delay');
+        register_setting('comporisons_redirect_settings', 'comporisons_redirect_terms');
+
+        /** sorting label settigns field register */
+        add_settings_field(
+            'comporisons_sorting_label',
+            'Sort Button Label',
+            [$this, 'comporisons_text_field_html'], // function which prints the field
+            'comporisons-slug', // page slug
+            'comporisons_settings_section_id', // section ID
+            array(
+                'label_for' => 'comporisons_sorting_label',
+                'class' => 'comporisons-class', // for <tr> element
+            )
+        );
+
+        /** filter label settigns field register */
+        add_settings_field(
+            'comporisons_filter_label',
+            'Filter Button Label',
+            [$this, 'comporisons_filter_text_field_html'], // function which prints the field
+            'comporisons-slug', // page slug
+            'comporisons_settings_section_id', // section ID
+            array(
+                'label_for' => 'comporisons_filter_label',
+                'class' => 'comporisons-class', // for <tr> element
+            )
+        );
+    }
+
+    /** filter button label */
+    public function comporisons_filter_text_field_html()
+    {
+        $label = get_option('comporisons_filter_label');
+        printf(
+            '<input type="text" id="comporisons_filter_label" name="comporisons_filter_label" value="%s" required />',
+            esc_attr($label)
+        );
+    }
+
+    /** sorting button label */
+    public function comporisons_text_field_html()
+    {
+        $label = get_option('comporisons_sorting_label');
+        printf(
+            '<input type="text" id="comporisons_sorting_label" name="comporisons_sorting_label" value="%s" required />',
+            esc_attr($label)
+        );
+    }
+
+    /**
+     * Register submenu
+     * @return void
+     */
+    public function register_sub_menu()
+    {
         add_submenu_page(
             'edit.php?post_type=com_comporison',
-            __('Comparison Settings', 'comporisons'),
+            __('Settings', 'comporisons'),
             __('Settings', 'comporisons'),
             'manage_options',
-            'comparison-settings',
-            array($this, 'render_settings_page')
+            'com_comporison-settings',
+            array(&$this, 'submenu_page_callback')
         );
-        
-        // Redirect settings page
+
+        // NEW Redirect Settings Page
         add_submenu_page(
             'edit.php?post_type=com_comporison',
             __('Redirect Settings', 'comporisons'),
             __('Redirect Settings', 'comporisons'),
             'manage_options',
-            'comparison-redirect-settings',
-            array($this, 'render_redirect_settings_page')
+            'com_comporison-redirect-settings',
+            array(&$this, 'render_redirect_settings_page')
+        );
+
+        add_submenu_page(
+            'edit.php?post_type=com_comporison_list',
+            __('Settings', 'comporisons'),
+            __('Settings', 'comporisons'),
+            'manage_options',
+            'com_comporison-list-settings',
+            array(&$this, 'submenu_list_page_callback')
         );
     }
-    
+
     /**
-     * Register settings
+     * Render submenu
+     * @return void
      */
-    public function register_settings() {
-        // Main settings
-        register_setting('comparison_settings', 'comporisons_sort_label');
-        register_setting('comparison_settings', 'comporisons_filter_label');
-        
-        // Redirect settings
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_title');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_safe_text');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_loading_text');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_fallback_text');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_button_text');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_delay');
-        register_setting('comparison_redirect_settings', 'comporisons_redirect_terms');
+    public function submenu_page_callback()
+    {
+        echo '<div class="wrap">
+        <h2>' . __('Compareit Settings Page', 'comporisons') . '</h2>
+        <form method="post" action="options.php">';
+
+        settings_fields('comporisons_settings'); // settings group name
+        do_settings_sections('comporisons-slug'); // just a page slug
+        submit_button();
+
+        echo '</form>';
+        echo '<h3>Shortcode Name</h3><code id="comporisons_shortcode">[Comparison]</code>';
+        echo '<h3>Default withdrawal of the last cards. The maximum number is 15 pieces.</h3><code id="comporisons_shortcode">[Comparison]</code>';
+        echo '<h3>Attribute: \'max = number\' - changes the number of displayed cards.</h3><code id="comporisons_shortcode">[Comparison max = 20], [Comparison max = 5]</code>';
+        echo '<h3>Attribute \'load_more\' - Adds a button that loads all cards that match the conditions. This attribute is best combined with a category attribute.</h3><code id="comporisons_shortcode">[Comparison load_more]</code></p>';
+        echo '<h3>Attribute \'category = "Category Name"\' - Filters the output by the category or categories that were submitted.</h3><code id="comporisons_shortcode">[Comparison category = "Category Name"], [Comparison category = "Category Name, Other Name"]</code></p>';
+        echo '<h3>Attribute \'filter\' - Adds a panel for filtering by categories. This attribute is best used with the category attribute.</h3><code id="comporisons_shortcode">[Comparison filter]</code></p>';
+        echo '<h3>You can also combine:</h3><p><code id="comporisons_shortcode">[Comparison category="Category1, Сategory2" max=10 filter load_more]</code></p>';
+        echo '</div>';
     }
-    
+
     /**
-     * Render main settings page
+     * Render submenu list page
+     * @return void
      */
-    public function render_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1><?php _e('Comparison Settings', 'comporisons'); ?></h1>
-            
-            <form method="post" action="options.php">
-                <?php settings_fields('comparison_settings'); ?>
-                
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">
-                            <label for="sort_label"><?php _e('Sort Button Label', 'comporisons'); ?></label>
-                        </th>
-                        <td>
-                            <input type="text" 
-                                   id="sort_label" 
-                                   name="comporisons_sort_label" 
-                                   class="regular-text" 
-                                   value="<?php echo esc_attr(get_option('comporisons_sort_label', 'Sort')); ?>">
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <th scope="row">
-                            <label for="filter_label"><?php _e('Filter Button Label', 'comporisons'); ?></label>
-                        </th>
-                        <td>
-                            <input type="text" 
-                                   id="filter_label" 
-                                   name="comporisons_filter_label" 
-                                   class="regular-text" 
-                                   value="<?php echo esc_attr(get_option('comporisons_filter_label', 'Filter')); ?>">
-                        </td>
-                    </tr>
-                </table>
-                
-                <?php submit_button(); ?>
-            </form>
-        </div>
-        <?php
+    public function submenu_list_page_callback()
+    {
+        echo '<div class="wrap">
+        <h2>' . __('Brand Lists Settings Page', 'comporisons') . '</h2>';
+
+        echo '<h3>Shortcode Name</h3><code id="comporisons_shortcode">[Comparison_v2 list_id="*"]</code>';
+        echo '<h3>Attribute: \'max = number\' - changes the number of displayed cards.</h3><code id="comporisons_shortcode">[Comparison_v2 max=20 list_id="*"], [Comparison_v2 max=5 list_id="*"]</code>';
+        echo '<h3>Attribute \'load_more\' - Adds a button that loads all cards that match the conditions. This attribute is best combined with a category attribute.</h3><code id="comporisons_shortcode">[Comparison list_id="*" max=5 list_id="*" load_more]</code></p>';
+        echo '</div>';
     }
-    
+
     /**
-     * Render redirect settings page
+     * Render NEW redirect settings page
+     * @return void
      */
-    public function render_redirect_settings_page() {
+    public function render_redirect_settings_page()
+    {
         // Get current settings with defaults
         $title = get_option('comporisons_redirect_title', 'Thank you for visiting {BRAND_NAME}!');
         $safe_text = get_option('comporisons_redirect_safe_text', 'You are now being redirected to {BRAND_NAME}');
