@@ -399,9 +399,12 @@ class ComparisonHtml
     {
         $html = '<div class="com-comparison-submit"><div class="com-comparison-wrapper">';
         if (!empty($this->comparison_metabox['select_btn_link'])) {
+            // Get the actual affiliate URL
+            $affiliate_url = $this->comparison_metabox['select_btn_link'];
+            
             $html .= '<a ' . (isset($this->comparison_metabox['select_btn_color']) ? ('style="background-color:' . $this->comparison_metabox['select_btn_color'] . '"') : '') .
                 'href = "' . get_permalink() . '" 
-
+            data-affiliate-url="' . esc_url($affiliate_url) . '"
             rel="nofollow" target="_blank" class="com-comparison-submit__button" 
             title="' . get_the_title() . '">' .  __($this->comparison_metabox['select_btn_text'], "comporisons") . ' ' . get_the_title() . '</a>';
         }
@@ -409,34 +412,22 @@ class ComparisonHtml
         <div class="com-comparison-submit__terms" data-toggle-id="com-comparison-terms-1">' . __($this->comparison_metabox['text_label_term_condition'], "comporisons") . '</div>
             </div>';
     }
+    
     private function get_html_submit_block_v2($buttons_text)
     {
         $html = ' <td class="column cbl-button">';
         if (!empty($this->comparison_metabox['select_btn_link'])) {
+            // Get the actual affiliate URL
+            $affiliate_url = $this->comparison_metabox['select_btn_link'];
+            
             $html .= '<a ' . (isset($this->comparison_metabox['select_btn_color']) ? ('style="background-color:' . $this->comparison_metabox['select_btn_color'] . '"') : '') .
                 'href = "' . get_permalink() . '" 
+            data-affiliate-url="' . esc_url($affiliate_url) . '"
             rel="nofollow" target="_blank" class="comparison-bonus-list-submit__button" 
             title="' . (!empty($buttons_text) ? $buttons_text  : get_the_title()) . '">' . (!empty($buttons_text) ? ''  : __($this->comparison_metabox['select_btn_text'], "comporisons")) . ' ' . (!empty($buttons_text) ? $buttons_text  : get_the_title()) . '</a>';
         }
 
-
-        /*if (!empty($this->comparison_metabox['logo_brand_label'])) {
-            $html .= '<div class="comparison-bonus-list-brand-label">';
-            if (!empty($this->comparison_metabox['logo_brand_label_link'])) {
-                $html .= '<a style="color:' .
-                    $this->comparison_metabox['logo_brand_label_color'] . '" href="' .
-                    $this->comparison_metabox['logo_brand_label_link']
-                    . '" rel="nofollow" target="_blank" title="' .
-                    $this->comparison_metabox['logo_brand_label'] . '">' . $this->comparison_metabox['logo_brand_label'] . '</a>';
-            } else {
-                $html .= '<span style="color:' .
-                    $this->comparison_metabox['logo_brand_label_color'] . '">' . $this->comparison_metabox['logo_brand_label'] . '</span>';
-            }
-            $html .= '</div>';
-        }*/
-
-
-        return  $html;
+        return $html . '</td>';
     }
 
     /** render html terms block */
