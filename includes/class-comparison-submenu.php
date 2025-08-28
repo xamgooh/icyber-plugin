@@ -182,10 +182,10 @@ class Comparison_Sub_Menu
     public function render_redirect_settings_page()
     {
         // Get current settings with defaults
-        $title = get_option('comporisons_redirect_title', 'Thank you for visiting {BRAND_NAME}!');
+        $title = get_option('comporisons_redirect_title', 'Thank you for visiting us!');
         $safe_text = get_option('comporisons_redirect_safe_text', 'You are now being redirected to {BRAND_NAME}');
         $loading_text = get_option('comporisons_redirect_loading_text', 'PLEASE WAIT');
-        $fallback_text = get_option('comporisons_redirect_fallback_text', 'If you are not forwarded to');
+        $fallback_text = get_option('comporisons_redirect_fallback_text', 'If you are not forwarded');
         $button_text = get_option('comporisons_redirect_button_text', 'CLICK HERE');
         $redirect_delay = get_option('comporisons_redirect_delay', '3000');
         
@@ -214,7 +214,7 @@ class Comparison_Sub_Menu
                                    name="redirect_title" 
                                    class="large-text" 
                                    value="<?php echo esc_attr($title); ?>">
-                            <p class="description"><?php _e('Main heading in the redirect popup. Use {BRAND_NAME} to insert brand name.', 'comporisons'); ?></p>
+                            <p class="description"><?php _e('Main heading in the redirect popup.', 'comporisons'); ?></p>
                         </td>
                     </tr>
                     
