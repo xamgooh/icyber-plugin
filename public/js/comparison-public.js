@@ -19,9 +19,10 @@
         terms: window.comparisonRedirectSettings ? window.comparisonRedirectSettings.terms : []
     };
 
-    // Function to open redirect popup
-    function openRedirectPopup(url, brandName, brandLogo) {
-        currentRedirectUrl = url;
+    // Function to open redirect popup - UPDATED TO ACCEPT AFFILIATE URL
+    function openRedirectPopup(url, brandName, brandLogo, affiliateUrl) {
+        // Use affiliate URL for the actual redirect, fallback to redirect URL
+        currentRedirectUrl = affiliateUrl || url;
         
         const overlay = document.getElementById('com-redirect-overlay');
         const redirectBox = document.getElementById('com-redirect-box');
@@ -62,10 +63,10 @@
             safeElement.textContent = safeText;
         }
         
-        // Update fallback button href
+        // Update fallback button href - USE AFFILIATE URL HERE
         const clickHereBtn = document.getElementById('com-redirect-clickhere');
         if (clickHereBtn) {
-            clickHereBtn.href = url;
+            clickHereBtn.href = affiliateUrl || url;
         }
         
         // Show the popup
@@ -92,10 +93,10 @@
             }, 50);
         }
         
-        // Auto redirect after delay
+        // Auto redirect after delay - this still uses the redirect URL through WordPress
         redirectTimeout = setTimeout(function() {
             if (currentRedirectUrl) {
-                window.location.href = currentRedirectUrl;
+                window.location.href = url; // Use the original URL for auto-redirect (goes through WordPress tracking)
             }
             closeRedirectPopup();
         }, redirectSettings.redirectDelay);
@@ -300,7 +301,7 @@
         });
 
         // ====================
-        // NEW POPUP REDIRECT FUNCTIONALITY
+        // NEW POPUP REDIRECT FUNCTIONALITY - UPDATED TO HANDLE AFFILIATE URL
         // ====================
         
         // Intercept clicks on redirect links
@@ -322,20 +323,23 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
+                // GET THE AFFILIATE URL FROM DATA ATTRIBUTE
+                const affiliateUrl = link.dataset.affiliateUrl || link.href;
+                
                 // Try to get brand data from the comparison item
-                const item = link.closest('.comparison-item, .comparison-list-item, .item');
+                const item = link.closest('.comparison-item, .comparison-list-item, .item, .com-comparison');
                 let brandName = '';
                 let brandLogo = '';
                 
                 if (item) {
                     // Try different selectors for brand name
-                    const nameElement = item.querySelector('.card-title, .logo_brand_name, .brand-name, h3, h4');
+                    const nameElement = item.querySelector('.card-title, .logo_brand_name, .brand-name, h3, h4, .com-comparison-price__brand');
                     if (nameElement) {
                         brandName = nameElement.textContent.trim();
                     }
                     
                     // Try different selectors for brand logo
-                    const logoElement = item.querySelector('.card-logo img, .logo_img img, .brand-logo img, img');
+                    const logoElement = item.querySelector('.card-logo img, .logo_img img, .brand-logo img, .img-logo img, img');
                     if (logoElement) {
                         brandLogo = logoElement.src;
                     }
@@ -345,8 +349,8 @@
                 brandName = brandName || link.dataset.brandName || item?.dataset.brandName || 'this brand';
                 brandLogo = brandLogo || link.dataset.brandLogo || item?.dataset.brandLogo || '';
                 
-                // Open popup
-                openRedirectPopup(link.href, brandName, brandLogo);
+                // Open popup - PASS THE AFFILIATE URL AS 4TH PARAMETER
+                openRedirectPopup(link.href, brandName, brandLogo, affiliateUrl);
                 
                 return false;
             }
