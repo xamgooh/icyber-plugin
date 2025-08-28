@@ -115,7 +115,7 @@ class Comparison_Sub_Menu
             array(&$this, 'submenu_page_callback')
         );
 
-        // NEW Redirect Settings Page
+        // NEW Redirect Settings Page - KEEP THIS
         add_submenu_page(
             'edit.php?post_type=com_comporison',
             __('Redirect Settings', 'comporisons'),
@@ -136,7 +136,7 @@ class Comparison_Sub_Menu
     }
 
     /**
-     * Render submenu
+     * Render submenu - UPDATED for Comparison_v2 only
      * @return void
      */
     public function submenu_page_callback()
@@ -150,18 +150,44 @@ class Comparison_Sub_Menu
         submit_button();
 
         echo '</form>';
-        echo '<h3>Shortcode Name</h3><code id="comporisons_shortcode">[Comparison]</code>';
-        echo '<h3>Default withdrawal of the last cards. The maximum number is 15 pieces.</h3><code id="comporisons_shortcode">[Comparison]</code>';
-        echo '<h3>Attribute: \'max = number\' - changes the number of displayed cards.</h3><code id="comporisons_shortcode">[Comparison max = 20], [Comparison max = 5]</code>';
-        echo '<h3>Attribute \'load_more\' - Adds a button that loads all cards that match the conditions. This attribute is best combined with a category attribute.</h3><code id="comporisons_shortcode">[Comparison load_more]</code></p>';
-        echo '<h3>Attribute \'category = "Category Name"\' - Filters the output by the category or categories that were submitted.</h3><code id="comporisons_shortcode">[Comparison category = "Category Name"], [Comparison category = "Category Name, Other Name"]</code></p>';
-        echo '<h3>Attribute \'filter\' - Adds a panel for filtering by categories. This attribute is best used with the category attribute.</h3><code id="comporisons_shortcode">[Comparison filter]</code></p>';
-        echo '<h3>You can also combine:</h3><p><code id="comporisons_shortcode">[Comparison category="Category1, Сategory2" max=10 filter load_more]</code></p>';
+        
+        // UPDATED: Only show Comparison_v2 documentation
+        echo '<h3>Available Shortcode</h3>';
+        echo '<p><strong>Note:</strong> The plugin now uses table/list view only. Card view has been deprecated.</p>';
+        
+        echo '<h3>Shortcode Name</h3><code>[Comparison_v2]</code>';
+        
+        echo '<h3>Required Attribute</h3>';
+        echo '<p><code>list_id</code> - The ID of the Brands List to display (required)</p>';
+        echo '<code>[Comparison_v2 list_id="123"]</code>';
+        
+        echo '<h3>Optional Attributes</h3>';
+        echo '<p><strong>max</strong> - Maximum number of items to display initially (default: 15)</p>';
+        echo '<code>[Comparison_v2 list_id="123" max=20]</code>';
+        echo '<code>[Comparison_v2 list_id="123" max=5]</code>';
+        echo '<code>[Comparison_v2 list_id="123" max=-1]</code> (shows all items)</p>';
+        
+        echo '<p><strong>load_more</strong> - Adds a button to load additional items</p>';
+        echo '<code>[Comparison_v2 list_id="123" load_more]</code></p>';
+        
+        echo '<p><strong>category</strong> - Filter by category slug(s)</p>';
+        echo '<code>[Comparison_v2 list_id="123" category="online-casinos"]</code>';
+        echo '<code>[Comparison_v2 list_id="123" category="online-casinos,sports-betting"]</code></p>';
+        
+        echo '<p><strong>filter</strong> - Show category filter buttons (use with multiple categories)</p>';
+        echo '<code>[Comparison_v2 list_id="123" category="online-casinos,sports-betting" filter]</code></p>';
+        
+        echo '<h3>Complete Example</h3>';
+        echo '<code>[Comparison_v2 list_id="123" category="online-casinos,sports-betting" max=10 filter load_more]</code></p>';
+        
+        echo '<h3>How to Find List ID</h3>';
+        echo '<p>Go to <strong>Brands Lists</strong> in the admin menu. The List ID is shown in the "List Shortcode" column for each list.</p>';
+        
         echo '</div>';
     }
 
     /**
-     * Render submenu list page
+     * Render submenu list page - UPDATED for Comparison_v2 only
      * @return void
      */
     public function submenu_list_page_callback()
@@ -169,14 +195,36 @@ class Comparison_Sub_Menu
         echo '<div class="wrap">
         <h2>' . __('Brand Lists Settings Page', 'comporisons') . '</h2>';
 
-        echo '<h3>Shortcode Name</h3><code id="comporisons_shortcode">[Comparison_v2 list_id="*"]</code>';
-        echo '<h3>Attribute: \'max = number\' - changes the number of displayed cards.</h3><code id="comporisons_shortcode">[Comparison_v2 max=20 list_id="*"], [Comparison_v2 max=5 list_id="*"]</code>';
-        echo '<h3>Attribute \'load_more\' - Adds a button that loads all cards that match the conditions. This attribute is best combined with a category attribute.</h3><code id="comporisons_shortcode">[Comparison list_id="*" max=5 list_id="*" load_more]</code></p>';
+        echo '<h3>Shortcode Name</h3><code>[Comparison_v2 list_id="*"]</code>';
+        echo '<p>Replace * with your actual list ID</p>';
+        
+        echo '<h3>Creating and Using Lists</h3>';
+        echo '<ol>';
+        echo '<li>Create brands in the "Brands" section</li>';
+        echo '<li>Create a new list in "Brands Lists"</li>';
+        echo '<li>Add brands to your list and configure settings</li>';
+        echo '<li>Copy the list ID from the admin column</li>';
+        echo '<li>Use the shortcode with the list ID: <code>[Comparison_v2 list_id="YOUR_ID"]</code></li>';
+        echo '</ol>';
+        
+        echo '<h3>Example Usage</h3>';
+        echo '<p><strong>Basic list:</strong><br>';
+        echo '<code>[Comparison_v2 list_id="1"]</code></p>';
+        
+        echo '<p><strong>With limited items and load more:</strong><br>';
+        echo '<code>[Comparison_v2 list_id="1" max=5 load_more]</code></p>';
+        
+        echo '<p><strong>Filtered by category:</strong><br>';
+        echo '<code>[Comparison_v2 list_id="1" category="premium"]</code></p>';
+        
+        echo '<p><strong>Multiple categories with filter:</strong><br>';
+        echo '<code>[Comparison_v2 list_id="1" category="premium,standard" filter load_more]</code></p>';
+        
         echo '</div>';
     }
 
     /**
-     * Render NEW redirect settings page
+     * Render NEW redirect settings page - KEEP THIS ENTIRE METHOD
      * @return void
      */
     public function render_redirect_settings_page()
@@ -393,7 +441,7 @@ class Comparison_Sub_Menu
     }
     
     /**
-     * AJAX handler for saving redirect settings
+     * AJAX handler for saving redirect settings - KEEP THIS ENTIRE METHOD
      */
     public function ajax_save_redirect_settings() {
         // Check nonce
