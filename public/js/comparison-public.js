@@ -1,5 +1,6 @@
 /**
  * Comparison Plugin - Public JavaScript
+ * UPDATED: Fixed mixed class spellings - now uses correct "com_comparison" spelling
  * Updated version with card view functionality removed
  * Keeps table/list view (v2) and redirect popup functionality
  */
@@ -192,7 +193,8 @@
             t.stopPropagation();
             
             var i = n.closest(".isotop__grid").querySelectorAll(".isotop__grid--list"),
-                o = n.closest(".com-comparison-plugin").getElementsByClassName("com_comarison__list--container");
+                // UPDATED: Use correct spelling for container classes
+                o = n.closest(".com-comparison-plugin").getElementsByClassName("com_comparison__list--container");
             
             i.forEach(function(t) {
                 t.classList.remove("active");
@@ -237,7 +239,7 @@
         // REMOVED: Load more cards handler for card view
         // This was the com_btn--loadmore handler that called /getcards endpoint
 
-        // Load more LIST cards (for table/list view) - KEPT
+        // Load more LIST cards (for table/list view) - UPDATED with correct class names
         document.addEventListener("click", function(t) {
             var e = t.target;
             if (!e.classList.contains("com_btn-list--loadmore")) return !0;
@@ -257,8 +259,9 @@
             .then(function(t) { return t.json(); })
             .then(function(t) {
                 if (200 == t.status) {
-                    var n = e.closest(".com_comarison__list--container"),
-                        i = n.querySelector(".com_comparision_table-container");
+                    // UPDATED: Use correct spelling for container classes
+                    var n = e.closest(".com_comparison__list--container"),
+                        i = n.querySelector(".com_comparison_table-container");
                     setTimeout(function() {
                         n.classList.add("animate");
                     }, 500);
