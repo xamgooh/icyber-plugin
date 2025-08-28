@@ -229,11 +229,18 @@ class Comparison_Init
         }
 
         $data = rest_sanitize_value_from_schema(json_decode($req['p']), $schema);
+        
+        // Parse offset - this represents how many items have already been loaded
+        $offset = isset($data['offset']) ? intval($data['offset']) : 0;
+        
+        // Default posts per page for load more
+        $posts_per_page = 15;
 
         $args = array(
             'post_type' => 'com_comporison',
             'post_status' => 'publish',
-            'posts_per_page' => -1,
+            'posts_per_page' => $posts_per_page,
+            'offset' => $offset, // Use WordPress native offset parameter
         );
 
         if (!empty($data['category']) && $data['category'] != 'null') {
@@ -248,35 +255,60 @@ class Comparison_Init
         }
 
         if (!empty($data['list_id'])) {
-			$comparison_list_metabox = ComparisonHtml::metabox_list_transform_to_array($data['list_id']);
-			$posts_ids = [];
-			$posts_ids2 = [];
-			foreach ($comparison_list_metabox['brand_in_list'] as $key => $value) {
+            $comparison_list_metabox = ComparisonHtml::metabox_list_transform_to_array($data['list_id']);
+            $posts_ids = [];
+            $posts_ids2 = [];
+            
+            foreach ($comparison_list_metabox['brand_in_list'] as $key => $value) {
                 array_push($posts_ids, ["brand_id" => $value['select_post'], "brand_other_link" => $value['brand_other_link']]);
             }
-
-            //asort($posts_ids);
             
-			if ($comparison_list_metabox) {
-				foreach ($posts_ids as $key => $value) {
-					array_push($posts_ids2, $value["brand_id"]);
-				}
-				
-				$args['post__in'] = $posts_ids2;
-				$args['orderby'] = 'post__in';
-			}
-		}
+            if ($comparison_list_metabox) {
+                foreach ($posts_ids as $key => $value) {
+                    array_push($posts_ids2, $value["brand_id"]);
+                }
+                
+                // When using post__in with offset, we need to slice the array
+                if ($offset > 0) {
+                    // Get only the IDs we need based on offset
+                    $posts_ids2 = array_slice($posts_ids2, $offset, $posts_per_page);
+                    
+                    // If we have specific IDs after offset, use them
+                    if (!empty($posts_ids2)) {
+                        $args['post__in'] = $posts_ids2;
+                        $args['orderby'] = 'post__in';
+                        // Reset offset since we're using specific IDs
+                        $args['offset'] = 0;
+                        // Set posts_per_page to the number of IDs we have
+                        $args['posts_per_page'] = count($posts_ids2);
+                    } else {
+                        // No more posts to load
+                        return wp_send_json(['code' => 'success', 'data' => '', 'status' => 200]);
+                    }
+                } else {
+                    // For initial load or when no offset
+                    $sliced_ids = array_slice($posts_ids2, 0, $posts_per_page);
+                    if (!empty($sliced_ids)) {
+                        $args['post__in'] = $sliced_ids;
+                        $args['orderby'] = 'post__in';
+                    }
+                }
+            }
+        }
 
         $query = new WP_Query($args);
-
         
-        if (empty($query)) {
-            return new WP_Error('no_author', 'Invalid author', array('status' => 404));
+        if (empty($query) || !$query->have_posts()) {
+            return wp_send_json(['code' => 'success', 'data' => '', 'status' => 200]);
         }
 
         $comparion_list_html = new ComparisonHtml();
+        
+        // Pass the actual offset to maintain correct numbering
+        // The third parameter should be the count to display, fourth is the starting number for items
+        $html = $comparion_list_html->get_list_row_html_v2($query, $data['list_id'], $posts_per_page, $offset);
 
-        return wp_send_json(['code' => 'success', 'data' => $comparion_list_html->get_list_row_html_v2($query, $data['list_id'], $query->found_posts, $data['offset']), 'status' => 200]);
+        return wp_send_json(['code' => 'success', 'data' => $html, 'status' => 200]);
     }
 
     public function comparison_custom_posttype()
