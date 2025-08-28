@@ -240,10 +240,11 @@ class Comparison_Init
             'post_type' => 'com_comporison',
             'post_status' => 'publish',
             'posts_per_page' => $posts_per_page,
-            'offset' => $offset, // Use WordPress native offset parameter
+            'offset' => $offset,
         );
 
-        if (!empty($data['category']) && $data['category'] != 'null') {
+        // Only add category filter if it's not 'null' or empty
+        if (!empty($data['category']) && $data['category'] !== 'null') {
             $args['tax_query'] = array(
                 array(
                     'taxonomy' => 'com_category',
@@ -259,38 +260,30 @@ class Comparison_Init
             $posts_ids = [];
             $posts_ids2 = [];
             
-            foreach ($comparison_list_metabox['brand_in_list'] as $key => $value) {
-                array_push($posts_ids, ["brand_id" => $value['select_post'], "brand_other_link" => $value['brand_other_link']]);
-            }
-            
-            if ($comparison_list_metabox) {
+            if ($comparison_list_metabox && isset($comparison_list_metabox['brand_in_list'])) {
+                foreach ($comparison_list_metabox['brand_in_list'] as $key => $value) {
+                    array_push($posts_ids, ["brand_id" => $value['select_post'], "brand_other_link" => $value['brand_other_link']]);
+                }
+                
                 foreach ($posts_ids as $key => $value) {
                     array_push($posts_ids2, $value["brand_id"]);
                 }
                 
                 // When using post__in with offset, we need to slice the array
-                if ($offset > 0) {
+                if (!empty($posts_ids2)) {
                     // Get only the IDs we need based on offset
-                    $posts_ids2 = array_slice($posts_ids2, $offset, $posts_per_page);
+                    $sliced_ids = array_slice($posts_ids2, $offset, $posts_per_page);
                     
-                    // If we have specific IDs after offset, use them
-                    if (!empty($posts_ids2)) {
-                        $args['post__in'] = $posts_ids2;
+                    if (!empty($sliced_ids)) {
+                        $args['post__in'] = $sliced_ids;
                         $args['orderby'] = 'post__in';
                         // Reset offset since we're using specific IDs
                         $args['offset'] = 0;
                         // Set posts_per_page to the number of IDs we have
-                        $args['posts_per_page'] = count($posts_ids2);
+                        $args['posts_per_page'] = count($sliced_ids);
                     } else {
                         // No more posts to load
                         return wp_send_json(['code' => 'success', 'data' => '', 'status' => 200]);
-                    }
-                } else {
-                    // For initial load or when no offset
-                    $sliced_ids = array_slice($posts_ids2, 0, $posts_per_page);
-                    if (!empty($sliced_ids)) {
-                        $args['post__in'] = $sliced_ids;
-                        $args['orderby'] = 'post__in';
                     }
                 }
             }
@@ -305,7 +298,6 @@ class Comparison_Init
         $comparion_list_html = new ComparisonHtml();
         
         // Pass the actual offset to maintain correct numbering
-        // The third parameter should be the count to display, fourth is the starting number for items
         $html = $comparion_list_html->get_list_row_html_v2($query, $data['list_id'], $posts_per_page, $offset);
 
         return wp_send_json(['code' => 'success', 'data' => $html, 'status' => 200]);
