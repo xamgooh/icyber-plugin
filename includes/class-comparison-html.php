@@ -71,7 +71,8 @@ class ComparisonHtml
 
                 $column_num++;
             }
-            $html .= '<th class="cbl-button"></th></tr></thead><tbody class="com_comparision_table-container">';
+            // UPDATED: Use correct spelling
+            $html .= '<th class="cbl-button"></th></tr></thead><tbody class="com_comparison_table-container">';
 
             if ($comparison_list_metabox['top_bar_visib'] == 'show') {
                 $html .= '<tr class="general-terms">';
