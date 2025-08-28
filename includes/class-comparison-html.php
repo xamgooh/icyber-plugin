@@ -37,41 +37,9 @@ class ComparisonHtml
         $this->comparison = 'com_comporison';
     }
 
-    public function get_list_html($wp_query, $count = 15, $offset = 0)
-    {
-        $html = '';
-        if ($wp_query) {
-            while ($wp_query->have_posts() && $count-- > 0) {
-                $wp_query->the_post();
-                if ($offset-- > 0) {
-                    continue;
-                }
+    // REMOVED: get_list_html() method - was used for card view
 
-                $this->comparison_metabox = $this->metabox_transform_to_array(get_the_ID());
-                $is_highlight = (isset($this->comparison_metabox['highlight']) && $this->comparison_metabox['highlight']) ? true : false;
-                //render Comparison card
-                $html .= '<div class="com-comparison' . ($is_highlight ? ' highlight' : '') . (defined('JSON_REQUEST') ? ' com-animated' : '') . '"
-                 style="background-color:' . $this->comparison_metabox['card_bg_color'] . '">
-				<div class="com-comparison-wrap">';
-                $html .= $this->get_html_logo_block($is_highlight);
-                $html .= '<div class="com-compatison-content__container"><div class="com-comparison-characteristics">';
-                $html .= $this->get_html_characteristics_block();
-                $html .= "</div>";
-                $html .= $this->get_html_promote_block();
-                $html .= $this->get_html_price_block();
-                $html .= $this->get_html_submit_block();
-                $html .= '</div></div>';
-                $html .= $this->get_html_terms_block();
-                $html .= '</div>';
-                $html .= $this->get_html_other_links();
-            }
-            // Restore original Post Data
-            wp_reset_postdata();
-        }
-        return $html;
-    }
-
-    // render list shortcode
+    // render list shortcode - V2 ONLY
     public function get_list_html_v2($wp_query, $list_id, $count = 15, $offset = 0)
     {
         $comparison_list_metabox = self::metabox_list_transform_to_array($list_id);
@@ -266,16 +234,14 @@ class ComparisonHtml
         return $html;
     }
 
-    /** return highlight svg */
+    /** return highlight svg - KEPT because used by v2 */
     private function get_html_highlight_svg()
     {
         $highlight = $this->comparison_metabox['highlight_label'];
         return '<span class="comparison__highlight_svg">' . $highlight . '</span>';
-
-        //return '<svg class="comparison__highlight_svg" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="256" x2="256" y1="512" y2="0"><stop offset="0" stop-color="#fd5900"/><stop offset="1" stop-color="#ffde00"/></linearGradient><linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="256" x2="256" y1="451.998" y2="242.004"><stop offset="0" stop-color="#ffe59a"/><stop offset="1" stop-color="#ffffd5"/></linearGradient><g><g><g><path d="m397.343 158.387c-4.658-2.153-10.093-1.787-14.399.938-4.321 2.754-6.943 7.529-6.943 12.656v25.019c0 8.276-6.724 15-15 15-7.412 0-13.682-5.332-14.897-12.583-12.204-75.645-67.78-199.417-90.104-199.417s-77.9 123.772-90.088 199.329c-1.23 7.339-7.5 12.671-14.912 12.671-8.276 0-15-6.724-15-15v-25.02c0-5.127-2.622-9.902-6.943-12.656-4.321-2.725-9.727-3.091-14.399-.938-51.065 23.819-83.658 127.618-83.658 188.614 0 97.148 92.52 165 225 165s225-67.852 225-165c0-60.996-32.593-164.795-83.657-188.613z" fill="url(#SVGID_1_)"/></g></g><g><g><path d="m328.759 309.119c-2.739-4.424-7.559-7.119-12.759-7.119h-33.281l-12.173-48.633c-1.523-6.094-6.665-10.591-12.905-11.279-6.372-.659-12.246 2.607-15.059 8.203l-60 120c-2.329 4.644-2.08 10.166.659 14.59s7.559 7.119 12.759 7.119h33.281l12.173 48.633c1.523 6.094 6.665 10.591 12.905 11.279 6.419.676 12.307-2.715 15.059-8.203l60-120c2.329-4.644 2.08-10.166-.659-14.59z" fill="url(#SVGID_2_)"/></g></g></g></svg>';
     }
 
-    /** render html stars block */
+    /** render html stars block - KEPT because used by v2 */
     private function get_html_stars_block()
     {
         $html = '<div class="com-comparison-stars">';
@@ -291,53 +257,15 @@ class ComparisonHtml
         }
         return $html .= '</div>';
     }
-    /** render html logo block */
-    private function get_html_logo_block($is_highlight)
-    {
-        $html = '<div class="com-comparison-logo" style="background-color:' . $this->comparison_metabox['card_logo_bg_color'] . '">';
-        if ($is_highlight) {
-            $highlight_img_url = plugin_dir_url(__DIR__) . '/public/img/hilight_bg.png';
-            $html .= '<span class="com-comparison__highlight-label"  
-            style="background-image:url(' . $highlight_img_url . ');"><span>' . $this->comparison_metabox['highlight_label'] . '</span></span>';
-        }
-        $html .= $this->get_html_stars_block();
-        if (!empty($this->comparison_metabox['logo_brand_label'])) {
-            $html .= '<div class="com-comparison__brand-label">';
-            if (!empty($this->comparison_metabox['logo_brand_label_link'])) {
-                $html .= '<a style="color:' .
-                    $this->comparison_metabox['logo_brand_label_color'] . '" href="' .
-                    $this->comparison_metabox['logo_brand_label_link']
-                    . '" rel="nofollow" target="_blank" class="com-comparison__brand-label--link" title="' .
-                    $this->comparison_metabox['logo_brand_label'] . '">' . $this->comparison_metabox['logo_brand_label'] . '</a>';
-            } else {
-                $html .= '<span style="color:' .
-                    $this->comparison_metabox['logo_brand_label_color'] . '">' . $this->comparison_metabox['logo_brand_label'] . '</span>';
-            }
-            $html .= '</div>';
-        }
-        $html .= '<div class="img-logo"><a href="' .  get_permalink() . '" rel="nofollow" target="_blank" title="' . get_the_title() . '">';
-        $html .= (has_post_thumbnail() ? get_the_post_thumbnail(get_the_ID(), [170, 'auto']) : '');
-        $html .= '</a></div></div>';
-        return $html;
-    }
 
-    /** render html characteristics block */
-    private function get_html_characteristics_block()
-    {
-        $html = '
-        <ul class="com-comparison-characteristics__list">';
-        if (array_key_exists('preference_text', $this->comparison_metabox) && is_array($this->comparison_metabox['preference_text'])) {
-            foreach ($this->comparison_metabox['preference_text'] as $value) {
-                $html .= !empty($value['description']) ? '<li style="color:' . $this->getMetabox('preference_text_color', '#6f6f6f') . '">
-            <svg xmlns="http://www.w3.org/2000/svg" height="512pt" viewBox="0 0 512 512" width="512pt">
-                <path fill="' . $this->getMetabox('preference_color', '#F0544F') . '"  d="m512 256c0 141.386719-114.613281 256-256 256s-256-114.613281-256-256 114.613281-256 256-256 256 114.613281 256 256zm0 0" /><path d="m411.3125 196.6875-48-48c-6.25-6.246094-16.375-6.246094-22.625 0l-116.6875 116.679688-52.6875-52.679688c-6.25-6.246094-16.375-6.246094-22.625 0l-48 48c-6.246094 6.25-6.246094 16.375 0 22.625l96 96c3 3 7.070312 4.6875 11.3125 4.6875h32c4.242188 0 8.3125-1.6875 11.3125-4.6875l160-160c6.246094-6.25 6.246094-16.375 0-22.625zm0 0" fill="#fff"/>
-            </svg>' . $value['description'] . '</li>' : '';
-            }
-        }
-        return $html .= '</ul>';
-    }
+    // REMOVED: get_html_logo_block() - was used for card view
+    // REMOVED: get_html_characteristics_block() - was used for card view
+    // REMOVED: get_html_promote_block() - was used for card view
+    // REMOVED: get_html_price_block() - was used for card view
+    // REMOVED: get_html_submit_block() - was used for card view
+    // REMOVED: get_html_terms_block() - was used for card view
 
-    /** render html characteristics list block */
+    /** render html characteristics list block - KEPT for v2 */
     private function get_html_characteristics_list_block()
     {
         $html = '
@@ -354,6 +282,7 @@ class ComparisonHtml
         }
         return $html .= '</ul>';
     }
+
     private function get_html_characteristics_block_v2($is_highlight)
     {
         $html = "";
@@ -369,50 +298,6 @@ class ComparisonHtml
         return $html;
     }
 
-    /** render html promote block */
-    private function get_html_promote_block()
-    {
-        return '<div class="com-comparison-promote">
-            <div class="com-comparison-promote__text">
-                <div class="com-comparison-promote__text_content">' . (!empty($this->comparison_metabox['description']) ? $this->comparison_metabox['description'] : '') . '</div>
-            </div>
-        </div>';
-    }
-
-
-    /** render html price block */
-    private function get_html_price_block()
-    {
-        $html  = '<div class="com-comparison-price">';
-        $html .= '<span class="com-comparison-price__number" style="color:' .  (!empty($this->comparison_metabox['amount_color']) ? $this->comparison_metabox['amount_color'] : '') . ';">' . (!empty($this->comparison_metabox['amount_details']) ?  $this->comparison_metabox['amount_details'] : '')  . '</span>';
-        $html .= '<div class="com-comparison-price__other-container">';
-        $html .= '<span class="com-comparison-price__brand">' . get_the_title() . '</span>';
-        $html .= $this->get_html_stars_block();
-        $html .= '</div></div>';
-
-        return $html;
-    }
-
-
-    /** render html submit block */
-    private function get_html_submit_block()
-    {
-        $html = '<div class="com-comparison-submit"><div class="com-comparison-wrapper">';
-        if (!empty($this->comparison_metabox['select_btn_link'])) {
-            // Get the actual affiliate URL
-            $affiliate_url = $this->comparison_metabox['select_btn_link'];
-            
-            $html .= '<a ' . (isset($this->comparison_metabox['select_btn_color']) ? ('style="background-color:' . $this->comparison_metabox['select_btn_color'] . '"') : '') .
-                'href = "' . get_permalink() . '" 
-            data-affiliate-url="' . esc_url($affiliate_url) . '"
-            rel="nofollow" target="_blank" class="com-comparison-submit__button" 
-            title="' . get_the_title() . '">' .  __($this->comparison_metabox['select_btn_text'], "comporisons") . ' ' . get_the_title() . '</a>';
-        }
-        return $html .= '</div></div><div class="com-comparison__more">
-        <div class="com-comparison-submit__terms" data-toggle-id="com-comparison-terms-1">' . __($this->comparison_metabox['text_label_term_condition'], "comporisons") . '</div>
-            </div>';
-    }
-    
     private function get_html_submit_block_v2($buttons_text)
     {
         $html = ' <td class="column cbl-button">';
@@ -430,25 +315,7 @@ class ComparisonHtml
         return $html . '</td>';
     }
 
-    /** render html terms block */
-    private function get_html_terms_block()
-    {
-        $html = '<div class="com-comparison-terms-wrap hidden-terms" id="com-comparison-terms-1">
-                <dl class="com-comparison-terms__list">';
-        if (array_key_exists('more_info', $this->comparison_metabox) && is_array($this->comparison_metabox['more_info'])) {
-            foreach ($this->comparison_metabox['more_info'] as $value) {
-                if (!empty($value['link_title'])) {
-                    $html .= '<dt>' . $value['link_title'] . ':</dt>
-                        <dd class="terms-list__' . $value['icon'] . '">
-                        ' . $value['description'] . '
-                        </dd>';
-                }
-            }
-        }
-        return $html .= '</dl></div>';
-    }
-
-    /** render html Other Links block */
+    /** render html Other Links block - KEPT for both */
     private function get_html_other_links($list = null)
     {
         $simbol = ' | ';
@@ -486,7 +353,7 @@ class ComparisonHtml
         return '<div class="com-comparison-promote__links"></div>';
     }
 
-    /** render html Other Links block */
+    /** render html Top Bar Info block - KEPT for v2 */
     private function get_html_top_bar_info($comparison_list_metabox)
     {
         $simbol = ' | ';
@@ -528,7 +395,7 @@ class ComparisonHtml
     }
 
     /**
-     *  get comparison metabox value
+     *  get comparison metabox value - KEPT (helper method)
      */
     public function getMetabox($metabox_id, $default = '')
     {
@@ -536,7 +403,7 @@ class ComparisonHtml
     }
 
     /**
-     * transform post metabox to array
+     * transform post metabox to array - KEPT (essential helper)
      */
     public function metabox_transform_to_array($id)
     {
@@ -603,7 +470,7 @@ class ComparisonHtml
     }
 
     /**
-     * Converting px to em
+     * Converting px to em - KEPT (utility method)
      */
     public function convertPxToEm($px = 16)
     {
