@@ -1,6 +1,7 @@
 /**
  * Comparison Plugin - Public JavaScript
- * Includes existing functionality + new popup redirect system
+ * Updated version with card view functionality removed
+ * Keeps table/list view (v2) and redirect popup functionality
  */
 
 (function() {
@@ -19,7 +20,7 @@
         terms: window.comparisonRedirectSettings ? window.comparisonRedirectSettings.terms : []
     };
 
-    // Function to open redirect popup - UPDATED TO ACCEPT AFFILIATE URL
+    // Function to open redirect popup
     function openRedirectPopup(url, brandName, brandLogo, affiliateUrl) {
         // Use affiliate URL for the actual redirect, fallback to redirect URL
         currentRedirectUrl = affiliateUrl || url;
@@ -63,7 +64,7 @@
             safeElement.textContent = safeText;
         }
         
-        // Update fallback button href - USE AFFILIATE URL HERE
+        // Update fallback button href
         const clickHereBtn = document.getElementById('com-redirect-clickhere');
         if (clickHereBtn) {
             clickHereBtn.href = affiliateUrl || url;
@@ -93,10 +94,10 @@
             }, 50);
         }
         
-        // Auto redirect after delay - this still uses the redirect URL through WordPress
+        // Auto redirect after delay
         redirectTimeout = setTimeout(function() {
             if (currentRedirectUrl) {
-                window.location.href = url; // Use the original URL for auto-redirect (goes through WordPress tracking)
+                window.location.href = url; // Use the original URL for tracking
             }
             closeRedirectPopup();
         }, redirectSettings.redirectDelay);
@@ -170,24 +171,17 @@
     }
 
     // ====================
-    // EXISTING FUNCTIONALITY FROM YOUR MINIFIED CODE
+    // MAIN FUNCTIONALITY
     // ====================
     
-    // Toggle terms functionality
-    document.addEventListener("click", function(t) {
-        if (t.target.dataset.toggleId) {
-            t.target.classList.toggle("active");
-            var e = t.target.closest(".com-comparison-wrap").nextElementSibling;
-            e.classList.toggle("hidden-terms");
-            e.classList.toggle("shown-terms");
-        }
-    });
+    // REMOVED: Toggle terms functionality for card view
+    // This was used for the dropdown terms in card view which is no longer needed
 
     window.addEventListener("DOMContentLoaded", function() {
         // Create popup HTML on DOM ready
         createPopupHTML();
         
-        // Isotope grid item click
+        // Isotope grid item click (category filter)
         document.addEventListener("click", function(t) {
             var e, n = t.target;
             if (n.classList.contains("isotop__grid--item") || (n = n.closest(".isotop__grid--item")), 
@@ -212,7 +206,7 @@
             return !1;
         });
 
-        // Info open button
+        // Info open button (for table extra info)
         document.addEventListener("click", function(t) {
             var e, n = t.target;
             if (!n.classList.contains("js-info-open")) return !0;
@@ -221,7 +215,7 @@
             null === (e = n.closest(".item.hidden-info")) || void 0 === e || e.classList.remove("hidden-info");
         });
 
-        // Info close button
+        // Info close button (for table extra info)
         document.addEventListener("click", function(t) {
             var e = t.target;
             if (!e.classList.contains("js-info-close")) return !0;
@@ -230,7 +224,7 @@
             e.closest(".item").classList.add("hidden-info");
         });
 
-        // Menu toggle
+        // Menu toggle (mobile dropdown)
         document.addEventListener("click", function(t) {
             var e = t.target;
             if (!e.classList.contains("com__btn") && !e.classList.contains("com__icon--menu")) return !0;
@@ -240,36 +234,10 @@
             return n[0].classList.contains("hidden") ? n[0].classList.remove("hidden") : n[0].classList.add("hidden"), !1;
         });
 
-        // Load more cards
-        document.addEventListener("click", function(t) {
-            var e = t.target;
-            if (!e.classList.contains("com_btn--loadmore")) return !0;
-            t.preventDefault();
-            t.stopPropagation();
-            
-            var n = e.getAttribute("data-list"),
-                i = e.getAttribute("data-limit"),
-                o = e.getAttribute("data-resturl");
-            
-            fetch(o + "/wp-json/comparison/v1/getcards", {
-                body: "p=" + JSON.stringify({category: n, offset: i}),
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                method: "post"
-            })
-            .then(function(t) { return t.json(); })
-            .then(function(t) {
-                if (200 == t.status) {
-                    var n = e.closest(".com_comarison__list--container");
-                    setTimeout(function() {
-                        n.classList.add("animate");
-                    }, 500);
-                    e.insertAdjacentHTML("beforebegin", t.data);
-                    e.remove();
-                }
-            });
-        });
+        // REMOVED: Load more cards handler for card view
+        // This was the com_btn--loadmore handler that called /getcards endpoint
 
-        // Load more list cards
+        // Load more LIST cards (for table/list view) - KEPT
         document.addEventListener("click", function(t) {
             var e = t.target;
             if (!e.classList.contains("com_btn-list--loadmore")) return !0;
@@ -301,7 +269,7 @@
         });
 
         // ====================
-        // NEW POPUP REDIRECT FUNCTIONALITY - UPDATED TO HANDLE AFFILIATE URL
+        // POPUP REDIRECT FUNCTIONALITY
         // ====================
         
         // Intercept clicks on redirect links
@@ -314,32 +282,34 @@
                 link = target.closest('a[href*="/redirect/"]');
             }
             
-            // Also check for buttons with btn-select class
-            if (!link && (target.classList.contains('btn-select') || target.closest('.btn-select'))) {
-                link = target.classList.contains('btn-select') ? target : target.closest('.btn-select');
+            // Also check for buttons with specific classes (table view buttons)
+            if (!link && (target.classList.contains('comparison-bonus-list-submit__button') || 
+                         target.closest('.comparison-bonus-list-submit__button'))) {
+                link = target.classList.contains('comparison-bonus-list-submit__button') ? 
+                       target : target.closest('.comparison-bonus-list-submit__button');
             }
             
             if (link && link.href && link.href.includes('/redirect/')) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // GET THE AFFILIATE URL FROM DATA ATTRIBUTE
+                // Get the affiliate URL from data attribute
                 const affiliateUrl = link.dataset.affiliateUrl || link.href;
                 
-                // Try to get brand data from the comparison item
-                const item = link.closest('.comparison-item, .comparison-list-item, .item, .com-comparison');
+                // Try to get brand data from the table row or item
+                const item = link.closest('.item, .com-comparison');
                 let brandName = '';
                 let brandLogo = '';
                 
                 if (item) {
-                    // Try different selectors for brand name
-                    const nameElement = item.querySelector('.card-title, .logo_brand_name, .brand-name, h3, h4, .com-comparison-price__brand');
+                    // Try different selectors for brand name (table view)
+                    const nameElement = item.querySelector('.comparison-brand-wrap h4, h3, h4');
                     if (nameElement) {
                         brandName = nameElement.textContent.trim();
                     }
                     
-                    // Try different selectors for brand logo
-                    const logoElement = item.querySelector('.card-logo img, .logo_img img, .brand-logo img, .img-logo img, img');
+                    // Try different selectors for brand logo (table view)
+                    const logoElement = item.querySelector('.comparison-brand-link img, img');
                     if (logoElement) {
                         brandLogo = logoElement.src;
                     }
@@ -349,7 +319,7 @@
                 brandName = brandName || link.dataset.brandName || item?.dataset.brandName || 'this brand';
                 brandLogo = brandLogo || link.dataset.brandLogo || item?.dataset.brandLogo || '';
                 
-                // Open popup - PASS THE AFFILIATE URL AS 4TH PARAMETER
+                // Open popup with affiliate URL
                 openRedirectPopup(link.href, brandName, brandLogo, affiliateUrl);
                 
                 return false;
