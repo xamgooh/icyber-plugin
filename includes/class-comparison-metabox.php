@@ -42,24 +42,10 @@ class Comparison_Metabox
                 'position' => 'normal',
                 'metadata' => array(
                     array(
-                        'slug' => 'description',
-                        'label' => __('Description', "comporisons"),
-                        'type' => 'wp_editor',
-                        'tab_class' => 'field_1',
-                        'required' => false,
-                    ),
-                    array(
                         'slug' => 'amount_details',
                         'label' => 'Amount Details',
                         'type' => 'text',
                         'tab_class' => 'field_2',
-                    ),
-                    array(
-                        'slug' => 'amount_color',
-                        'label' => __('Amount Color', "comporisons"),
-                        'type' => 'color',
-                        'tab_class' => 'field_2',
-                        'default' => '#01364A'
                     ),
                     array(
                         'slug' => 'preference_text',
@@ -91,18 +77,6 @@ class Comparison_Metabox
                     array(
                         'slug' => 'logo_brand_name',
                         'label' => __('Logo Brand Name', "comporisons"),
-                        'type' => 'text',
-                        'tab_class' => 'field_6',
-                    ),
-                    array(
-                        'slug' => 'logo_brand_label',
-                        'label' => __('Logo Brand Label', "comporisons"),
-                        'type' => 'text',
-                        'tab_class' => 'field_6',
-                    ),
-                    array(
-                        'slug' => 'logo_brand_label_link',
-                        'label' => __('Logo Brand Label Link', "comporisons"),
                         'type' => 'text',
                         'tab_class' => 'field_6',
                     ),
@@ -231,99 +205,14 @@ class Comparison_Metabox
                         'tab_class' => 'field_8',
                         'default' => 'Hot now!',
                     ),
-                    /* array(
-                        'slug' => 'highlight_label_bg_color',
-                        'label' => __('Highlight Label Background Image', "comporisons"),
-                        'type' => 'file',
-                        'tab_class' => 'field_8',
-                    ),*/
-                    /*array(
-                        'slug' => 'list_number_bg_color',
-                        'label' => __('List Number Background Color', "comporisons"),
-                        'type' => 'color',
-                        'tab_class' => 'field_9',
-                        'default' => '#1e72bd'
-                    ),*/
-                    array(
-                        'slug' => 'card_bg_color',
-                        'label' => __('Background Color', "comporisons"),
-                        'type' => 'color',
-                        'tab_class' => 'field_9',
-                        'default' => '#fff'
-                    ),
-                    array(
-                        'slug' => 'card_redirect_bg_color',
-                        'label' => __('Redirect Background Color', "comporisons"),
-                        'type' => 'color',
-                        'tab_class' => 'field_9',
-                        'default' => '#fff'
-                    ),
-                    array(
-                        'slug' => 'card_redirect_box_bg_color',
-                        'label' => __('Redirect Box Background Color', "comporisons"),
-                        'type' => 'color',
-                        'tab_class' => 'field_9',
-                        'default' => '#eee'
-                    ),
-                    /* array(
-                        'slug' => 'list_col_4',
-                        'label' => __('Default Column 4 content', "comporisons"),
-                        'type' => 'text',
-                        'tab_class' => 'field_10'
-                    ),
-                    array(
-                        'slug' => 'list_col_5',
-                        'label' => __('Default Column 5 content', "comporisons"),
-                        'type' => 'text',
-                        'tab_class' => 'field_10'
-                    ),
-                   array(
-                        'slug' => 'list_col_6',
-                        'label' => __('Default Column 6 content', "comporisons"),
-                        'type' => 'text',
-                        'tab_class' => 'field_10'
-                    ),*/
                     array(
                         'slug' => 'litle_icon',
                         'label' => __('Additional icon url(If you need to display a different logo in the lists)', "comporisons"),
                         'type' => 'text',
                         'tab_class' => 'field_10'
                     ),
-                    array(
-                        'slug' => 'custom_columns_text',
-                        'label' => __('Custom Columns Text', "comporisons"),
-                        'type' => 'repeater',
-                        'tab_class' => 'field_10',
-                        'fields' => array(
-                            array(
-                                'slug' => 'select_list',
-                                'label' =>  __('Lists select', "comporisons"),
-                                'type' => 'select',
-                                'options' => self::get_lists(),
-                            ),
-                            array(
-                                'slug' => 'column_text_4',
-                                'label' =>  __('Column 4 content', "comporisons"),
-                                'type' => 'text',
-                            ),
-                            array(
-                                'slug' => 'column_text_5',
-                                'label' =>  __('Column 5 content', "comporisons"),
-                                'type' => 'text',
-                            ),
-                            array(
-                                'slug' => 'column_text_6',
-                                'label' =>  __('Column 6 content', "comporisons"),
-                                'type' => 'text',
-                            ),
-                        ),
-                    ),
                 ),
                 'tabs' => array(
-                    array(
-                        'key' => 'field_1',
-                        'label' => 'description',
-                    ),
                     array(
                         'key' => 'field_2',
                         'label' => 'amount',
@@ -346,19 +235,15 @@ class Comparison_Metabox
                     ),
                     array(
                         'key' => 'field_7',
-                        'label' => 'button highlight',
+                        'label' => 'button',
                     ),
                     array(
                         'key' => 'field_8',
                         'label' => 'highlight',
                     ),
                     array(
-                        'key' => 'field_9',
-                        'label' => 'other',
-                    ),
-                    array(
                         'key' => 'field_10',
-                        'label' => 'shortcode_v2',
+                        'label' => 'additional settings',
                     ),
                 ),
             ),
@@ -405,7 +290,7 @@ class Comparison_Metabox
 
         foreach ($metadata as $metadatum) {
 
-            $html .= '<div class="metadata-wrap ' . $metadatum['tab_class'] . ' ' . ($metadatum['tab_class'] === 'field_1' ? 'active' : 'hidden')  . '">';
+            $html .= '<div class="metadata-wrap ' . $metadatum['tab_class'] . ' ' . ($metadatum['tab_class'] === 'field_2' ? 'active' : 'hidden')  . '">';
 
 
             $metadatum_type = array_key_exists('type', $metadatum) ? $metadatum['type'] : 'text';
@@ -503,7 +388,7 @@ class Comparison_Metabox
 						alt=""
 						class="com_upload_image_show"
 						' . ($image_url == '' ? 'style="display: none;"' : '') . '/>					
-					<a
+					
 						href="#"
 						class="com_upload_image_remove"
 						' . ($image_url == '' ? 'style="display: none;"' : '') . '>Remove Image</a>';
