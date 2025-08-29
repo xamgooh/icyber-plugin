@@ -80,4 +80,47 @@
 .com_comparision_table-container .item,
 .com_comarison_table-container .item{/* same as .com_comparison_table-container .item */}
 
+/* Load More Button - Redirect Box Design */
+.com_btn-list--loadmore,
+.com_btn--loadmore {
+    display: block;
+    padding: 12px 24px;
+    background: #00ff88;
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px auto;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 255, 136, 0.2);
+}
+
+.com_btn-list--loadmore:hover,
+.com_btn--loadmore:hover {
+    background: #00dd77;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.com_btn-list--loadmore:active,
+.com_btn--loadmore:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 255, 136, 0.2);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .com_btn-list--loadmore,
+    .com_btn--loadmore {
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+}
+
 @media (min-width:768px){.comparison-bonus-list-d-none{display:none!important}}@media (max-width:768px){.comparison-bonus-list-m-none{display:none!important}}
